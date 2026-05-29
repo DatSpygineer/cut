@@ -2,6 +2,7 @@
 #define CUT_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #ifndef CUT_ERROR_MESSAGE_BUFFER_SIZE
     #define CUT_ERROR_MESSAGE_BUFFER_SIZE 200
@@ -101,7 +102,7 @@ struct CutTestCase {
 
 #define DECLARE_UT_MAIN(__module_name) \
     int cut_main(int argc, char** argv) { \
-        CutParseArgs(argc, argv);
+        CutParseArgs(argc, argv);\
         __module_name##_setup();\
         CUT_OPEN_TEST_LOG_FILE(#__module_name "_test_logs.txt");\
         size_t success = 0, failure = 0;\
