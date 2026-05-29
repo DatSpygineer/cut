@@ -50,5 +50,5 @@ macro(add_unit_test MODULE_NAME)
 endmacro()
 
 add_unit_test(cut
-    SOURCES cut_test.c
+    SOURCES cut_example.c
 )

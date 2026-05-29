@@ -34,7 +34,7 @@ END_TEST_CASE_LIST()
 
 DECLARE_UT_MAIN(cut)
 
-int main() {
+int main(int argc, char** argv) {
     int result = RUN_TESTS();
     if (p != NULL) {
         puts("Cleanup failed");

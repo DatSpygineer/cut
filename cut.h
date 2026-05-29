@@ -100,9 +100,10 @@ struct CutTestCase {
 #define TEST_ASSERT_NULL_MESSAGE(__ptr, __error_message, ...) if ((__ptr) != NULL) { TEST_FAIL(__error_message, ##__VA_ARGS__); }
 
 #define DECLARE_UT_MAIN(__module_name) \
-    int cut_main() { \
+    int cut_main(int argc, char** argv) { \
+        CutParseArgs(argc, argv);
         __module_name##_setup();\
-        CUT_OPEN_TEST_LOG_FILE("ut_logs/" #__module_name "_test_logs.log");\
+        CUT_OPEN_TEST_LOG_FILE(#__module_name "_test_logs.txt");\
         size_t success = 0, failure = 0;\
         const size_t testcase_count = sizeof(__module_name##_test_cases) / sizeof(__module_name##_test_cases[0]);\
         for (size_t i = 0; i < testcase_count; ++i) {\
@@ -121,21 +122,25 @@ struct CutTestCase {
         CUT_PRINTF("Passed [%zu/%zu]\n", success, testcase_count);\
         CUT_PRINTF("Failed [%zu/%zu]\n", failure, testcase_count);\
         if (failure == 0) {\
-            CUT_PRINTF_NO_LOG("\x1B[32;1m");\
+            CutSetTextColorGreen();\
             CUT_PRINTF("UT passed!\n");\
-            CUT_PRINTF_NO_LOG("\x1B[0m");\
         } else {\
-            CUT_PRINTF_NO_LOG("\x1B[31;1m");\
+            CutSetTextColorRed();\
             CUT_PRINTF("UT failed!\n");\
-            CUT_PRINTF_NO_LOG("\x1B[0m");\
+            CutResetTextColor();\
         }\
         __module_name##_cleanup();\
         CUT_CLOSE_TEST_LOG_FILE();\
         return (failure == 0) ? 0 : 1;\
     }
 
-#define RUN_TESTS cut_main
+#define RUN_TESTS() cut_main(argc, argv)
 
+extern void CutParseArgs(int argc, char** argv);
+extern void CutSetTextColorRed();
+extern void CutSetTextColorGreen();
+extern void CutResetTextColor();
+extern bool CutLogColorsEnabled();
 extern void CutLogError(const CutTestContext* ctx);
 extern void CutLogSuccess(const CutTestContext* ctx);
 extern void CutPrintF(const char* format, ...);

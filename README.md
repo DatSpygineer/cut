@@ -64,7 +64,8 @@ END_TEST_CASE_LIST()
 
 DECLARE_UT_MAIN(module_name)
 
-int main()
+// Important to have the command line argument parameters! It is used by the UT for flags!
+int main(int argc, char** argv)
 {
     return RUN_TESTS();
 }
