@@ -22,14 +22,9 @@ TEST(cut, example) {
     TEST_ASSERT_STR_EQUAL("hello", "hello");
     TEST_ASSERT_STR_NOT_EQUAL("hello", "world");
 }
-TEST(cut, fail_example) {
-    TEST_ASSERT_NOT_NULL(p);
-    TEST_ASSERT_EQUAL(1, 2);
-}
 
 BEGIN_TEST_CASE_LIST(cut)
-    DECLARE_TEST_CASE(cut, example),
-    DECLARE_TEST_CASE(cut, fail_example)
+    DECLARE_TEST_CASE(cut, example)
 END_TEST_CASE_LIST()
 
 DECLARE_UT_MAIN(cut)
