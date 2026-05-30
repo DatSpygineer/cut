@@ -1,10 +1,12 @@
 #include "cut.h"
 
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 
-static FILE* s_pTestLogFile = NULL;
+static FILE* s_pTestLogFile   = NULL;
 static bool s_bAllowLogColors = false;
+static bool s_bAllowLogFile   = false;
 
 #ifdef _WIN32
     #include <Windows.h>
@@ -15,14 +17,14 @@ static bool s_bAllowLogColors = false;
     static HANDLE s_hConsole = NULL;
 #else
     #include <unistd.h>
-    #include <limits.h>
-    #include <sys/stat.h>
 #endif
 
 void CutLogError(const CutTestContext* ctx) {
+    CutSetTextColorRed();
     printf("(%s:%i) Test case \"%s\" failed: %s\n",
         ctx->caller_file, ctx->caller_line, ctx->current_test->name, ctx->error_message
     );
+    CutResetTextColor();
     if (s_pTestLogFile != NULL) {
         fprintf(s_pTestLogFile, "(%s:%i) Test case \"%s\" failed: %s\n",
             ctx->caller_file, ctx->caller_line, ctx->current_test->name, ctx->error_message
@@ -30,7 +32,9 @@ void CutLogError(const CutTestContext* ctx) {
     }
 }
 void CutLogSuccess(const CutTestContext* ctx) {
+    CutSetTextColorGreen();
     printf("Test case \"%s\" succeeded\n", ctx->current_test->name);
+    CutResetTextColor();
     if (s_pTestLogFile != NULL) {
         fprintf(s_pTestLogFile, "Test case \"%s\" succeeded\n", ctx->current_test->name);
     }
@@ -65,15 +69,21 @@ void CutParseArgs(int argc, char** argv) {
                 s_dwDefaultColor = consoleInfo.wAttributes;
             }
 #endif
+        } else if (strcmp(argv[i], "--log") == 0 || strcmp(argv[i], "-l") == 0) {
+            s_bAllowLogFile = true;
         }
     }
 }
 void CutOpenTestLogFile(const char* filename) {
+    if (s_bAllowLogFile) {
 #ifdef _WIN32
-    fopen_s(&s_pTestLogFile, filename, "w");
+        fopen_s(&s_pTestLogFile, filename, "w");
 #else
-    s_pTestLogFile = fopen(filename, "w");
+        s_pTestLogFile = fopen(filename, "w");
 #endif
+    } else {
+        s_pTestLogFile = NULL;
+    }
 }
 void CutCloseTestLogFile() {
     if (s_pTestLogFile != NULL) {
