@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.20)
 
 project(cut C)
 
-enable_testing()
+if (NOT CUT_EXCLUDE_EXAMPLE_TEST)
+    enable_testing()
+endif()
 
 set(CMAKE_C_STANDARD 11)
 
@@ -49,6 +51,8 @@ macro(add_unit_test MODULE_NAME)
     add_test(test_${MODULE_NAME} ${TARGET_NAME})
 endmacro()
 
-add_unit_test(cut
-    SOURCES cut_example.c
-)
+if (NOT CUT_EXCLUDE_EXAMPLE_TEST)
+    add_unit_test(cut
+        SOURCES cut_example.c
+    )
+endif()
